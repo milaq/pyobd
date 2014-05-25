@@ -245,12 +245,12 @@ class MyApp(wx.App):
             sel = e.m_itemIndex
             state = self.senprod.active[sel]
             print sel, state
-            if   state == 0:
+            if state == 0:
                 self.senprod.on(sel)
-                self.sensors.SetStringItem(sel,1,"1")
+                self.sensors.SetItemTextColour(sel, wx.BLACK)
             elif state == 1:
                 self.senprod.off(sel)
-                self.sensors.SetStringItem(sel,1,"0")
+                self.sensors.SetItemTextColour(sel, wx.LIGHT_GREY)
             else:
                 debug("Incorrect sensor state")
         
@@ -365,7 +365,7 @@ class MyApp(wx.App):
           self.RECONNATTEMPTS=self.config.getint("pyOBD","RECONNATTEMPTS")
           self.SERTIMEOUT=self.config.getint("pyOBD","SERTIMEOUT")
         
-        frame = wx.Frame(None, -1, "pyOBD-II")
+        frame = wx.Frame(None, -1, "pyOBD")
         self.frame=frame
 
         EVT_RESULT(self,self.OnResult,EVT_RESULT_ID)
@@ -378,12 +378,12 @@ class MyApp(wx.App):
         self.nb = wx.Notebook(frame, -1, style = wx.NB_TOP)
         
         self.status = self.MyListCtrl(self.nb, tID,style=wx.LC_REPORT|wx.SUNKEN_BORDER)
-        self.status.InsertColumn(0, "Description",width=200)
+        self.status.InsertColumn(0, "Description",width=100)
         self.status.InsertColumn(1, "Value")
-        self.status.Append(["Link State","Disconnnected"]);
+        self.status.Append(["Link State","Disconnected"]);
         self.status.Append(["Protocol","---"]);
         self.status.Append(["Cable version","---"]);
-        self.status.Append(["COM port",self.COMPORT]);
+        self.status.Append(["Device",self.COMPORT]);
         
         self.nb.AddPage(self.status, "Status")
         
@@ -402,7 +402,7 @@ class MyApp(wx.App):
         self.trace = self.MyListCtrl(self.nb, tID,style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         self.trace.InsertColumn(0, "Level",width=40)
         self.trace.InsertColumn(1, "Message")
-        self.nb.AddPage(self.trace, "Trace")
+        self.nb.AddPage(self.trace, "Log")
         self.TraceDebug(1,"Application started")
 
         # Setting up the menu.
@@ -410,27 +410,29 @@ class MyApp(wx.App):
         self.filemenu.Append(ID_EXIT,"E&xit"," Terminate the program")
 
         self.settingmenu = wx.Menu()
-        self.settingmenu.Append(ID_CONFIG,"Configure"," Configure pyOBD")
         self.settingmenu.Append(ID_RESET,"Connect"," Reopen and connect to device")
         self.settingmenu.Append(ID_DISCONNECT,"Disconnect","Close connection to device")
+        self.settingmenu.AppendSeparator()
+        self.settingmenu.Append(ID_CONFIG,"Configure"," Configure pyOBD")
 
         self.dtcmenu= wx.Menu()
         # tady toto nastavi automaticky tab DTC a provede akci
         self.dtcmenu.Append(ID_GETC  ,"Get DTCs",   " Get DTC Codes")
         self.dtcmenu.Append(ID_CLEAR ,"Clear DTC",  " Clear DTC Codes")
+        self.dtcmenu.AppendSeparator()
         self.dtcmenu.Append(ID_LOOK  ,"Code Lookup"," Lookup DTC Codes")
 
         self.helpmenu = wx.Menu()
         
-        self.helpmenu.Append(ID_HELP_ABOUT  ,"About this program",   " Get DTC Codes")
-        self.helpmenu.Append(ID_HELP_VISIT  ,"Visit program homepage"," Lookup DTC Codes")
-        self.helpmenu.Append(ID_HELP_ORDER ,"Order OBD-II cables",  " Clear DTC Codes")
+        self.helpmenu.Append(ID_HELP_ABOUT  ,"About",   " About this program")
+        #self.helpmenu.Append(ID_HELP_VISIT  ,"Visit program homepage"," Visit the pyOBD project page")
+        #self.helpmenu.Append(ID_HELP_ORDER ,"Order OBD-II cables",  " PROMOTIONAL: Order cables")
 
 
         # Creating the menubar.
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.filemenu,"&File") # Adding the "filemenu" to the MenuBar
-        self.menuBar.Append(self.settingmenu,"&OBD-II")
+        self.menuBar.Append(self.settingmenu,"&Device")
         self.menuBar.Append(self.dtcmenu,"&Trouble codes")
         self.menuBar.Append(self.helpmenu,"&Help")
         
@@ -450,7 +452,8 @@ class MyApp(wx.App):
         self.SetTopWindow(frame)
 
         frame.Show(True)
-        frame.SetSize((520,400))
+        frame.SetSize((480,wx.DisplaySize()[1]-150))
+        frame.Centre()
         self.sensor_control_off()
 
         return True
@@ -462,7 +465,7 @@ class MyApp(wx.App):
         webbrowser.open("http://www.obdtester.com/order")
     
     def OnHelpAbout(self,event): #todo about box
-        Text = """  PyOBD is an automotive OBD2 diagnosting application using ELM237 cable.
+        Text = """PyOBD is an automotive OBD2 diagnosting application using ELM237 cable.
 
 (C) 2008-2009 SeCons Ltd.
 (C) 2004 Charles Donour Sizemore
@@ -524,7 +527,6 @@ the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  0211
         self.sensor_control_off()
         
     def OpenPort(self,e):
-        
         if self.senprod: # signal current producers to finish
             self.senprod.stop()
         self.ThreadControl = 0    
