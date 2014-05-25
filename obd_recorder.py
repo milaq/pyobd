@@ -6,6 +6,7 @@ import platform
 import obd_sensors
 from datetime import datetime
 import time
+import os
 
 from obd_utils import scanSerial
 
@@ -14,7 +15,7 @@ class OBD_Recorder():
         self.port = None
         self.sensorlist = []
         localtime = time.localtime(time.time())
-        filename = path+"bike-"+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"-"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
+        filename = path+str(localtime[0])+"-"+str(localtime[1])+"-"+str(localtime[2])+"_"+str(localtime[3])+"-"+str(localtime[4])+"-"+str(localtime[5])+".log"
         self.log_file = open(filename, "w", 128)
         self.log_file.write("Time,RPM,MPH,Throttle,Load,Gear\n");
 
@@ -92,7 +93,10 @@ class OBD_Recorder():
             
             
 logitems = ["rpm", "speed", "throttle_pos", "load"]
-o = OBD_Recorder('/home/pi/logs/', logitems)
+d = "logs"
+if not os.path.exists(d):
+    os.makedirs(d)
+o = OBD_Recorder('logs/', logitems)
 o.connect()
 if not o.is_connected():
     print "Not connected"
