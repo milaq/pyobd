@@ -247,7 +247,7 @@ class MyApp(wx.App):
         def sensor_toggle(e):
             sel = e.m_itemIndex
             state = self.senprod.active[sel]
-            print sel, state
+            # TODO mlq - check whether pid is supported
             if state == 0:
                 self.senprod.on(sel)
                 self.sensors.SetItemTextColour(sel, wx.BLACK)
