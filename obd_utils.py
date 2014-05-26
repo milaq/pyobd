@@ -32,6 +32,13 @@ def scanSerial():
         s.close()   # explicit close 'cause of delayed GC in java
       except serial.SerialException:
         pass
+    for i in range(256):
+      try:
+        s = serial.Serial("/dev/rfcomm"+str(i))
+        available.append(s.portstr)
+        s.close()   # explicit close 'cause of delayed GC in java
+      except serial.SerialException:
+        pass
         
     # ELM-USB shows up as /dev/tty.usbmodemXXXX, where XXXX is a changing hex string
     # on connection; so we have to search through all 64K options
