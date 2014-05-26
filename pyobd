@@ -42,6 +42,8 @@ from obd_utils import scanSerial
 
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
+version = "0.9.3 (mlq)"
+
 ID_ABOUT  = 101
 ID_EXIT   = 110
 ID_CONFIG = 500
@@ -498,17 +500,19 @@ class MyApp(wx.App):
     def OnHelpAbout(self,event): #todo about box
         Text = """PyOBD is an automotive OBD2 diagnosting application using ELM237 cable.
 
+(C) 2014 Micha LaQua
 (C) 2008-2009 SeCons Ltd.
 (C) 2004 Charles Donour Sizemore
 
+https://github.com/milaq/pyobd
 http://www.obdtester.com/
 http://www.secons.com/
 
-  PyOBD is free software; you can redistribute it and/or modify
+PyOBD is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the Free Software Foundation; 
 either version 2 of the License, or (at your option) any later version.
 
-  PyOBD is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+PyOBD is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
 without even the implied warranty of MEHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 See the GNU General Public License for more details. You should have received a copy of 
 the GNU General Public License along with PyOBD; if not, write to 
@@ -528,7 +532,7 @@ the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  0211
         #sizer.Fit(HelpAboutDlg)
         #HelpAboutDlg.ShowModal()
         
-        self.HelpAboutDlg = wx.MessageDialog(self.frame, Text, 'About',wx.OK | wx.ICON_INFORMATION)
+        self.HelpAboutDlg = wx.MessageDialog(self.frame, "\npyOBD " + version +"\n\n" + Text, 'About',wx.OK | wx.ICON_INFORMATION)
         self.HelpAboutDlg.ShowModal()
         self.HelpAboutDlg.Destroy()
         
