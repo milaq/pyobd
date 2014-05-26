@@ -137,17 +137,17 @@ class MyApp(wx.App):
             self.supp     = self.port.sensor(0)[1] #read supported PIDS
             
             self.active.append(1); #PID 0 is always supported
+            wx.PostEvent(self._notify_window, ResultEvent([0,0,"Yes"]))
             
-            wx.PostEvent(self._notify_window, ResultEvent([0,0,"X"]))
             wx.PostEvent(self._notify_window, DebugEvent([1,"Communication initialized..."]))
             
             for i in range(1, len(self.supp)):
-                if self.supp[i-1] == "1": #put X in coloum if PID is supported
+                if self.supp[i-1] == "1": # indicate whether PID is supported
                     self.active.append(1)
-                    wx.PostEvent(self._notify_window, ResultEvent([i,0,"X"]))
+                    wx.PostEvent(self._notify_window, ResultEvent([i,0,"Yes"]))
                 else:
                     self.active.append(0)
-                    wx.PostEvent(self._notify_window, ResultEvent([i,0,""]))
+                    wx.PostEvent(self._notify_window, ResultEvent([i,0,"No"]))
             return "OK"
         
         def run(self):
@@ -537,6 +537,10 @@ the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  0211
         self.HelpAboutDlg.Destroy()
         
     def OnResult(self,event):
+        if event.data[2] == "Yes":
+            self.sensors.SetItemTextColour(event.data[0], wx.BLACK)
+        elif event.data[2] == "No":
+            self.sensors.SetItemTextColour(event.data[0], wx.LIGHT_GREY)
         self.sensors.SetStringItem(event.data[0], event.data[1], event.data[2])
     
     def OnStatus(self,event):
