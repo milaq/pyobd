@@ -71,10 +71,9 @@ def decrypt_dtc_code(code):
 
 class OBDPort:
      """ OBDPort abstracts all communication with OBD-II device."""
-     def __init__(self,portnum,_notify_window,SERTIMEOUT,RECONNATTEMPTS):
+     def __init__(self,portnum,baud,_notify_window,SERTIMEOUT,RECONNATTEMPTS):
          """Initializes port by resetting device and gettings supported PIDs. """
          # These should really be set by the user.
-         baud     = 38400
          databits = 8
          par      = serial.PARITY_NONE  # parity
          sb       = 1                   # stop bits
@@ -181,8 +180,9 @@ class OBDPort:
                  c = self.port.read(1)
                  if len(c) == 0:
                     if(repeat_count == self.retrymax):
+                        debug_display(self._notify_window, 2, "Reconnect limit reached, giving up")
                         break
-                    print "Retrying...\n"
+                    debug_display(self._notify_window, 1, "Retrying...")
                     repeat_count = repeat_count + 1
                     continue
                     
