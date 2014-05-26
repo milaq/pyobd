@@ -79,6 +79,7 @@ class OBDPort:
          par      = serial.PARITY_NONE  # parity
          sb       = 1                   # stop bits
          to       = SERTIMEOUT
+         self.retrymax = RECONNATTEMPTS
          self.ELMver = "Unknown"
          self.State = 1 #state SERIAL is 1 connected, 0 disconnected (connection failed)
          self.port = None
@@ -179,9 +180,9 @@ class OBDPort:
              while 1:
                  c = self.port.read(1)
                  if len(c) == 0:
-                    if(repeat_count == 5):
+                    if(repeat_count == self.retrymax):
                         break
-                    print "Got nothing\n"
+                    print "Retrying...\n"
                     repeat_count = repeat_count + 1
                     continue
                     
