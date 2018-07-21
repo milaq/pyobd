@@ -121,6 +121,8 @@ class OBDPort:
             return None
             
          debug_display(self._notify_window, 2, "0100 response:" + ready)
+         if "UNABLE TO CONNECT" in ready:
+            self.State = 0
          return None
               
      def close(self):
