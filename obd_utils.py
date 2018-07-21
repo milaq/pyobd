@@ -8,7 +8,7 @@ def scanSerial():
     available = []
     for i in range(256):
       try: #scan standart ttyS*
-        s = serial.Serial(i)
+        s = serial.Serial("/dev/ttyS"+str(i))
         available.append(s.portstr)
         s.close()   # explicit close 'cause of delayed GC in java
       except serial.SerialException:
